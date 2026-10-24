@@ -1,0 +1,124 @@
+server:
+  port: 8090
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: life-big-ledger
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/life_big_ledger?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+    # 通过环境变量覆盖，避免把生产库密码提交到仓库
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 3
+      connection-timeout: 30000
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+    default-property-inclusion: non_null
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+  task:
+    scheduling:
+      pool:
+        size: 2
+      thread-name-prefix: ledger-job-
+  # 邮件 SMTP 配置（app.email.mode=smtp 时才会真正发送；log 模式下可留占位）
+  mail:
+    host: smtp.qq.com
+    port: 465
+    # 发件邮箱与授权码从环境变量读取，避免明文提交到仓库
+    # 启动前设置：MAIL_USERNAME=发件邮箱  MAIL_AUTH_CODE=邮箱授权码（不是登录密码）
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_AUTH_CODE:}
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          socketFactory:
+            port: 465
+            class: javax.net.ssl.SSLSocketFactory
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    jdbc-type-for-null: 'null'
+    # 走 SLF4J，由 logging.level 控制；生产可整体关闭 SQL 日志
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    banner: false
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      table-underline: true
+
+# Sa-Token 登录认证
+sa-token:
+  token-name: Authorization
+  token-prefix: Bearer
+  timeout: 2592000
+  active-timeout: -1
+  is-concurrent: true
+  is-share: false
+  token-style: uuid
+  is-log: false
+  is-read-cookie: false
+
+# 接口文档（生产环境设置 KNIFE4J_PRODUCTION=true 或 SPRINGDOC_ENABLED=false 关闭）
+springdoc:
+  api-docs:
+    enabled: ${SPRINGDOC_ENABLED:true}
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+knife4j:
+  enable: ${KNIFE4J_ENABLED:true}
+  production: ${KNIFE4J_PRODUCTION:false}
+  setting:
+    language: zh_cn
+
+# 业务自定义配置
+app:
+  cache:
+    # local = 进程内缓存（默认，无需 Redis）；redis = 使用 Redis
+    type: local
+  cors:
+    # 逗号分隔；开发期可用 *（已关闭跨域凭证，不会携带 Cookie）
+    allowed-origins: "*"
+  ai:
+    enabled: true
+    provider: zhipu
+    api-key: ${ZHIPU_API_KEY:}
+    model: glm-4-flash
+    base-url: https://open.bigmodel.cn/api/paas/v4/chat/completions
+    timeout-seconds: 60
+  upload:
+    dir: ./uploads
+  email:
+    # log = 打日志 + dev 模式在响应里返回验证码（默认，无需 SMTP 配置，演示用）
+    # smtp = 真正调用 JavaMailSender 发送邮件
+    mode: smtp
+    # 验证码有效期（秒）
+    code-ttl: 60
+    # log 模式下是否在响应体里把验证码返回给前端（仅开发演示用，生产务必关闭）
+    dev-return-code: false
+    # 验证码长度
+    code-length: 6
+    # 单个验证码允许的最大错误次数，超过后作废，防止 6 位码被暴力枚举
+    max-attempts: 5
+
+logging:
+  level:
+    com.life.ledger: info
+    com.life.ledger.mapper: debug

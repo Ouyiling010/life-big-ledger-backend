@@ -4,14 +4,11 @@ server:
     context-path: /
 
 spring:
-  application:
-    name: life-big-ledger
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/life_big_ledger?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
-    # 通过环境变量覆盖，避免把生产库密码提交到仓库
-    username: ${DB_USERNAME:root}
-    password: 123456
+    url: "jdbc:mysql://mysql5.sqlpub.com:3310/ledger_db?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf8&allowPublicKeyRetrieval=true"
+    username: ledger_user
+    password: "FxauApQV6JLJpW8u"
     hikari:
       maximum-pool-size: 10
       minimum-idle: 3

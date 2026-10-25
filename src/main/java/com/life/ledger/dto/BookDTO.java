@@ -21,4 +21,5 @@ public class BookDTO implements Serializable {
     private String currency;
 
     private String description;
+    
 }

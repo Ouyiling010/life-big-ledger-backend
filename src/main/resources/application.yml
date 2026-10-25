@@ -11,7 +11,7 @@ spring:
     url: jdbc:mysql://localhost:3306/life_big_ledger?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
     # 通过环境变量覆盖，避免把生产库密码提交到仓库
     username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:root}
+    password: 123456
     hikari:
       maximum-pool-size: 10
       minimum-idle: 3
@@ -35,8 +35,8 @@ spring:
     port: 465
     # 发件邮箱与授权码从环境变量读取，避免明文提交到仓库
     # 启动前设置：MAIL_USERNAME=发件邮箱  MAIL_AUTH_CODE=邮箱授权码（不是登录密码）
-    username: ${MAIL_USERNAME:}
-    password: ${MAIL_AUTH_CODE:}
+    username: ${MAIL_USERNAME:3531750595@qq.com}
+    password: ${MAIL_AUTH_CODE:sjgrmmalakgrdcac}
     default-encoding: UTF-8
     properties:
       mail:
@@ -112,7 +112,7 @@ app:
     # 验证码有效期（秒）
     code-ttl: 60
     # log 模式下是否在响应体里把验证码返回给前端（仅开发演示用，生产务必关闭）
-    dev-return-code: false
+    dev-return-code: true
     # 验证码长度
     code-length: 6
     # 单个验证码允许的最大错误次数，超过后作废，防止 6 位码被暴力枚举

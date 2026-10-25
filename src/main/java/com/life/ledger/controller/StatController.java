@@ -29,38 +29,42 @@ public class StatController {
     @Operation(summary = "总览（收入/支出/结余/账单数/同比环比）")
     @GetMapping("/overview")
     public Result<StatOverviewVO> overview(@RequestParam(required = false) String period,
+                                           @RequestParam(required = false) Long bookId, // 🌟 新增
                                            @RequestParam(required = false) String startDate,
                                            @RequestParam(required = false) String endDate) {
-        return Result.ok(statService.overview(period, startDate, endDate));
+        return Result.ok(statService.overview(period, bookId, startDate, endDate));
     }
 
     /** 分类占比 */
     @Operation(summary = "分类占比（饼图）")
     @GetMapping("/category")
     public Result<List<Map<String, Object>>> category(@RequestParam(required = false) String period,
+                                                      @RequestParam(required = false) Long bookId, // 🌟 新增
                                                       @RequestParam(required = false) Integer type,
                                                       @RequestParam(required = false) String startDate,
                                                       @RequestParam(required = false) String endDate) {
-        return Result.ok(statService.categoryStat(period, type, startDate, endDate));
+        return Result.ok(statService.categoryStat(period, bookId, type, startDate, endDate));
     }
 
     /** 收支趋势 */
     @Operation(summary = "收支趋势（折线图，按日/月）")
     @GetMapping("/trend")
     public Result<List<Map<String, Object>>> trend(@RequestParam(required = false) String period,
+                                                   @RequestParam(required = false) Long bookId, // 🌟 新增
                                                    @RequestParam(required = false) String granularity,
                                                    @RequestParam(required = false) String startDate,
                                                    @RequestParam(required = false) String endDate) {
-        return Result.ok(statService.trend(period, granularity, startDate, endDate));
+        return Result.ok(statService.trend(period, bookId, granularity, startDate, endDate));
     }
 
     /** 日历热力图 */
     @Operation(summary = "日历热力图")
     @GetMapping("/calendar")
     public Result<List<Map<String, Object>>> calendar(@RequestParam(required = false) String period,
+                                                      @RequestParam(required = false) Long bookId, // 🌟 新增
                                                       @RequestParam(required = false) String startDate,
                                                       @RequestParam(required = false) String endDate) {
-        return Result.ok(statService.calendar(period, startDate, endDate));
+        return Result.ok(statService.calendar(period, bookId, startDate, endDate));
     }
 
     /** 账户余额概览 */

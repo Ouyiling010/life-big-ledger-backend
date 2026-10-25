@@ -11,16 +11,16 @@ import java.util.Map;
 public interface StatService {
 
     /** 总览：收入、支出、结余、账单数，含同比/环比；period=yyyy-MM，或 startDate/endDate=yyyy-MM-dd */
-    StatOverviewVO overview(String period, String startDate, String endDate);
+    StatOverviewVO overview(String period, Long bookId, String startDate, String endDate);
 
     /** 分类占比；支持 period 或 startDate/endDate */
-    List<Map<String, Object>> categoryStat(String period, Integer billType, String startDate, String endDate);
+    List<Map<String, Object>> categoryStat(String period, Long bookId, Integer billType, String startDate, String endDate);
 
     /** 收支趋势 granularity=day/month；支持 period 或 startDate/endDate */
-    List<Map<String, Object>> trend(String period, String granularity, String startDate, String endDate);
+    List<Map<String, Object>> trend(String period, Long bookId, String granularity, String startDate, String endDate);
 
     /** 日历热力图；支持 period 或 startDate/endDate */
-    List<Map<String, Object>> calendar(String period, String startDate, String endDate);
+    List<Map<String, Object>> calendar(String period, Long bookId, String startDate, String endDate);
 
     /** 账户余额概览 */
     List<Map<String, Object>> accountOverview();

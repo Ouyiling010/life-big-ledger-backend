@@ -171,6 +171,21 @@ public class BillServiceImpl implements BillService {
 
         validateSave(dto, ownerType, userId, familyId);
 
+        // 🌟🌟🌟 新增：防重复提交校验（同一用户/家庭，1分钟内，金额、类型与备注完全一致的账单）
+        LocalDateTime checkTime = LocalDateTime.now().minusMinutes(1);
+        LambdaQueryWrapper<Bill> duplicateWrapper = Wrappers.<Bill>lambdaQuery()
+                .eq(Bill::getUserId, userId)
+                .eq(ownerType == Constants.OWNER_FAMILY, Bill::getFamilyId, familyId)
+                .eq(Bill::getAmount, dto.getAmount())
+                .eq(Bill::getType, dto.getType())
+                .eq(StrUtil.isNotBlank(dto.getRemark()), Bill::getRemark, dto.getRemark())
+                .ge(Bill::getCreateTime, checkTime);
+
+        if (billMapper.selectCount(duplicateWrapper) > 0) {
+            throw new BizException(400, "检测到1分钟内有一笔相同的账单，请勿重复提交！");
+        }
+        // 🌟🌟🌟 防重校验结束
+
         Bill bill = new Bill();
         bill.setOwnerType(ownerType);
         bill.setUserId(userId);
@@ -190,6 +205,7 @@ public class BillServiceImpl implements BillService {
         bill.setImage(dto.getImage());
         bill.setIsExcluded(dto.getIsExcluded() == null ? 0 : dto.getIsExcluded());
         bill.setSource(dto.getSource() == null ? Constants.SOURCE_MANUAL : dto.getSource());
+
         billMapper.insert(bill);
 
         recalcAccounts(bill.getAccountId(), bill.getToAccountId());

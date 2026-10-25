@@ -146,9 +146,11 @@ public class ZhipuAiServiceImpl implements AiService {
         StatOverviewVO last = null;
         List<Map<String, Object>> categories = Collections.emptyList();
         try {
-            current = statService.overview(p, null, null);
-            categories = statService.categoryStat(p, Constants.BILL_EXPENSE, null, null);
-            last = statService.overview(YearMonth.parse(p).minusMonths(1).toString(), null, null);
+            // 🌟 核心修复：在这里补上 bookId 参数（传 null 代表按当前全量账本统计，如果想精确到账本，以后可以从前端传过来）
+            current = statService.overview(p, null, null, null);
+            // 🌟 核心修复：categoryStat 的参数顺序是 (period, bookId, type, startDate, endDate)
+            categories = statService.categoryStat(p, null, Constants.BILL_EXPENSE, null, null);
+            last = statService.overview(YearMonth.parse(p).minusMonths(1).toString(), null, null, null);
         } catch (Exception e) {
             log.warn("AI 分析聚合数据失败，使用兜底数据: {}", e.getMessage());
         }

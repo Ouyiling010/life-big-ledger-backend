@@ -25,7 +25,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private final AdminInterceptor adminInterceptor;
 
     /** 允许跨域的来源，逗号分隔；默认仅本机前端 */
-    @Value("${app.cors.allowed-origins:http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000}")
+    @Value("${app.cors.allowed-origins:*}")
     private String allowedOrigins;
 
     public WebMvcConfig(AppProperties appProperties, AdminInterceptor adminInterceptor) {

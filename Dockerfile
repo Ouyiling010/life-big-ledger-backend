@@ -8,5 +8,7 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
-EXPOSE 8090
-ENTRYPOINT ["java", "-jar", "app.jar"]
+EXPOSE 7860
+
+# 👇 核心就是下面这一行，注意里面的 "-Dserver.port=7860"
+ENTRYPOINT ["java", "-jar", "-Dserver.port=7860", "app.jar"]
